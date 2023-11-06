@@ -24,7 +24,7 @@ def main(session: snowpark.Session):
             row_count = session.sql(f"SELECT COUNT(*) AS COUNT FROM {view_name}").collect()[0]["COUNT"]
             viewrows.append((thedatabase, theschema, view_name, t, row_count))
         except:
-            viewrows.append((thedatabase, theschema, view_name, f, n))
+            viewrows.append((thedatabase, theschema, view_name, n, n))
     
     row_count_df = session.create_dataframe(viewrows, ["Database","Schema","View Name","IsReadable","Row Count"]).sort("View Name")
     
