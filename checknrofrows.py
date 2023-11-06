@@ -14,11 +14,18 @@ def main(session: snowpark.Session):
     listofviews = session.table(tableName).filter(col("TABLE_SCHEMA")==theschema)
 
     viewrows = []
+    t=True
+    f=False
+    n=None
+    
     for view in listofviews.collect():
         view_name = view["TABLE_NAME"]
-        row_count = session.sql(f"SELECT COUNT(*) AS COUNT FROM {view_name}").collect()[0]["COUNT"]
-        viewrows.append((thedatabase, theschema, view_name, row_count))
+        try:
+            row_count = session.sql(f"SELECT COUNT(*) AS COUNT FROM {view_name}").collect()[0]["COUNT"]
+            viewrows.append((thedatabase, theschema, view_name, t, row_count))
+        except:
+            viewrows.append((thedatabase, theschema, view_name, f, n))
     
-    row_count_df = session.create_dataframe(viewrows, ["Database","Schema","View Name","Row Count"]).sort("View Name")
+    row_count_df = session.create_dataframe(viewrows, ["Database","Schema","View Name","IsReadable","Row Count"]).sort("View Name")
     
     return row_count_df
